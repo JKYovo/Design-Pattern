@@ -3,9 +3,122 @@
 #include <map>
 using namespace std;
 
-//é€‚é…å™¨å°±æ˜¯ä¸¤è€…ä¹‹é—´çš„æ¡¥æ¢ï¼Œå®ƒå°†ä¸€ä¸ªç±»çš„æ¥å£è½¬æ¢æˆå®¢æˆ·å¸Œæœ›çš„å¦å¤–ä¸€ä¸ªæ¥å£ã€‚
-//é€‚é…å™¨æ¨¡å¼è®©é‚£äº›æœ¬æ¥ç”±äºæ¥å£ä¸å…¼å®¹è€Œä¸èƒ½ä¸€èµ·å·¥ä½œçš„ç±»å¯ä»¥ä¸€èµ·å·¥ä½œã€‚
+//ÊÊÅäÆ÷¾ÍÊÇÁ½ÕßÖ®¼äµÄÇÅÁº£¬Ëü½«Ò»¸öÀàµÄ½Ó¿Ú×ª»»³É¿Í»§Ï£ÍûµÄÁíÍâÒ»¸ö½Ó¿Ú¡£
+//ÊÊÅäÆ÷Ä£Ê½ÈÃÄÇĞ©±¾À´ÓÉÓÚ½Ó¿Ú²»¼æÈİ¶ø²»ÄÜÒ»Æğ¹¤×÷µÄÀà¿ÉÒÔÒ»Æğ¹¤×÷¡£
+class Foreigner
+{
+public:
+    virtual string confession() = 0; //·¢
+    void setResult(string msg)  // ÊÕ
+    {
+        cout << "Panda Say: " << msg << endl;
+    }
+    virtual ~Foreigner() {}
+};
 
-int main(){
-    
+// ÃÀ¹úÈË
+class American : public Foreigner
+{
+public:
+    string confession() override
+    {
+        return string("ÎÒÊÇĞóÉú, ÎÒÓĞ×ï!!!");
+    }
+};
+
+// ·¨¹úÈË
+class French : public Foreigner
+{
+public:
+    string confession()
+    {
+        return string("ÎÒÊÇÇ¿µÁ, ÎÒ¸ÃËÀ!!!");
+    }
+};
+
+// ´óĞÜÃ¨
+class Panda
+{
+public:
+    void recvMessage(string msg) //ÊÕ
+    {
+        cout << msg << endl;
+    }
+    string sendMessage() //·¢
+    {
+        return string("Ç¿µÁ¡¢Ğ×ÊÖ¡¢×ïÈËÊÇ²»¿ÉÄÜ±»¿íË¡ºÍÔ­ÁÂµÄ£¡");
+    }
+};
+
+// ³éÏóÇÇ°ÍÊÊÅäÆ÷Àà
+class AbstractChopper
+{
+public:
+    AbstractChopper(Foreigner* foreigner) : m_foreigner(foreigner) {}
+    virtual void translateToPanda() = 0;
+    virtual void translateToHuman() = 0;
+    virtual ~AbstractChopper() {}
+protected:
+    Panda m_panda;
+    Foreigner* m_foreigner = nullptr;
+};
+
+// Ó¢ÓïÇÇ°ÍÊÊÅäÆ÷
+class EnglishChopper : public AbstractChopper
+{
+public:
+    // ¼Ì³Ğ¹¹Ôìº¯Êı
+    using AbstractChopper::AbstractChopper;
+    void translateToPanda() override
+    {
+        string msg = m_foreigner->confession();
+        // ·­Òë²¢½«ĞÅÏ¢´«µİ¸øĞÜÃ¨¶ÔÏó
+        m_panda.recvMessage("ÃÀ¹úÈËËµ: " + msg);
+    }
+    void translateToHuman() override
+    {
+        // ½ÓÊÕĞÜÃ¨µÄĞÅÏ¢
+        string msg = m_panda.sendMessage();
+        // ·­Òë²¢½«ĞÜÃ¨µÄ»°×ª·¢¸øÃÀ¹úÈË
+        m_foreigner->setResult("ÃÀ¹úÀĞ, " + msg);
+    }
+};
+
+// ·¨ÓïÇÇ°ÍÊÊÅäÆ÷
+class FrenchChopper : public AbstractChopper
+{
+public:
+    using AbstractChopper::AbstractChopper;
+    void translateToPanda() override
+    {
+        string msg = m_foreigner->confession();
+        // ·­Òë²¢½«ĞÅÏ¢´«µİ¸øĞÜÃ¨¶ÔÏó
+        m_panda.recvMessage("·¨¹úÈËËµ: " + msg);
+    }
+    void translateToHuman() override
+    {
+        // ½ÓÊÕĞÜÃ¨µÄĞÅÏ¢
+        string msg = m_panda.sendMessage();
+        // ·­Òë²¢½«ĞÜÃ¨µÄ»°×ª·¢¸ø·¨¹úÈË
+        m_foreigner->setResult("·¨¹úÀĞ, " + msg);
+    }
+};
+
+int main()
+{
+    Foreigner* human = new American;
+    EnglishChopper* american = new EnglishChopper(human);
+    american->translateToPanda();
+    american->translateToHuman();
+    delete human;
+    delete american;
+
+    human = new French;
+    FrenchChopper* french = new FrenchChopper(human);
+    french->translateToPanda();
+    french->translateToHuman();
+    delete human;
+    delete french;
+
+    return 0;
 }
