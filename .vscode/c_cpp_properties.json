@@ -3,7 +3,8 @@
         {
             "name": "Win32",
             "includePath": [
-                "${workspaceFolder}/**"
+                "${workspaceFolder}/**",
+                "${workspaceFolder}/Design pattern/11.Observer Pattern"
             ],
             "defines": [
                 "_DEBUG",
@@ -14,11 +15,7 @@
             "compilerPath": "C:/MinGW/bin/g++.exe",
             "cStandard": "c17",
             "cppStandard": "c++17",
-            "intelliSenseMode": "windows-gcc-x64",
-            "compileCommands": [
-                "#include <iostream>",
-                "using namespace std;"
-            ]
+            "intelliSenseMode": "windows-gcc-x64"
         }
     ],
     "version": 4
