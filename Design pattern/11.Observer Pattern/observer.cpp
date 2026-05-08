@@ -5,6 +5,24 @@ using namespace std;
 
 //新闻社更新订阅者就会发出通知
 
+// 抽象的订阅者类
+class Observer
+{
+public:
+    Observer(string name, NewsAgency* news) :m_name(name), m_news(news) 
+    {
+        m_news->attach(this);//把自己添加到订阅者列表
+    }
+    void unsubscribe()
+    {
+        m_news->deatch(this);//把自己从订阅者列表中删除
+    }
+    virtual void update(string msg) = 0;
+    virtual ~Observer() {}
+protected:
+    string m_name;//订阅者名字
+    NewsAgency* m_news;//新闻社
+};
 
 void NewsAgency::attach(Observer* ob)
 {
@@ -24,25 +42,6 @@ void Morgans::notify(string msg)
         item->update(msg);	// 订阅者类的定义在下面
     }
 }
-
-// 抽象的订阅者类
-class Observer
-{
-public:
-    Observer(string name, NewsAgency* news) :m_name(name), m_news(news) 
-    {
-        m_news->attach(this);//把自己添加到订阅者列表
-    }
-    void unsubscribe()
-    {
-        m_news->deatch(this);//把自己从订阅者列表中删除
-    }
-    virtual void update(string msg) = 0;
-    virtual ~Observer() {}
-protected:
-    string m_name;//订阅者名字
-    NewsAgency* m_news;//新闻社
-};
 
 class Dragon : public Observer
 {

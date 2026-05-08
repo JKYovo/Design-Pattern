@@ -11,15 +11,13 @@ public:
     LazyTaskQueue& operator=(const LazyTaskQueue& obj) = delete;
     static LazyTaskQueue* getInstance()//有线程安全问题，使用互斥锁
     {
-        m_mutex.lock();
         if(m_taskQ == nullptr){
             lock_guard<mutex> lock(m_mutex); // 加锁，使用 lock_guard 管理互斥锁，确保锁在作用域结束时自动释放。
-            //m_mutex.lock();//双重检查，防止多次上锁解锁
+            // 双重检查，防止多次上锁解锁
             if (m_taskQ == nullptr)
             {
                 m_taskQ = new LazyTaskQueue;
             }
-           // m_mutex.unlock();
         }
         
         return m_taskQ;
@@ -32,4 +30,13 @@ private:
 LazyTaskQueue* LazyTaskQueue::m_taskQ = nullptr;
 mutex LazyTaskQueue::m_mutex;
 
+int main()
+{
+    LazyTaskQueue* obj1 = LazyTaskQueue::getInstance();
+    LazyTaskQueue* obj2 = LazyTaskQueue::getInstance();
 
+    cout << "obj1 address: " << obj1 << endl;
+    cout << "obj2 address: " << obj2 << endl;
+
+    return 0;
+}
